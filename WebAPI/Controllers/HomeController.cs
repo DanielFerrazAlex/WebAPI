@@ -6,53 +6,47 @@ using WebAPI.Models;
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
         private readonly _Context _context;
         private bool UserExists(int id)
         {
             return _context.Users.Any(x => x.Id == id);
         }
-
         public HomeController(_Context context)
         {
             _context = context;
         }
-
-        //Get:api/Users
-        [HttpGet]
+        //Get:http://localhost:5000/api/Users
+        [HttpGet("/api/User")]
         public async Task<ActionResult<IEnumerable<Users>>> BuscarTodosUsuarios()
         {
             return await _context.Users.ToListAsync();
         }
-
-        //Get:api/Users/{id}
-        [HttpGet("{id}")]
+        //Get:http://localhost:5000/api/Users/{id}
+        [HttpGet("/api/User/{id}")]
         public async Task<ActionResult<Users>> BuscarUsuarioPorId(int id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound();
             }
             return Ok(user);
 
         }
-
         //Post:api/Users
-        [HttpPost]
-        public async Task<ActionResult<Users>> AdicionarUsuario(Users user)
+        [HttpPost("/api/User")]
+        public async Task<ActionResult<Users>> AdicionarUsuario([FromBody]Users user)
         {
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
             return user;
         }
-
-        //Put:api/Users/{id}
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Users>> AtualizarUsuario(Users user, int id)
+        //Put:http://localhost:5000/api/Users/{id}
+        [HttpPut("/api/User/{id}")]
+        public async Task<ActionResult<Users>> AtualizarUsuario([FromBody]Users user, int id)
         {
             if(id != user.Id) 
             {
@@ -76,11 +70,12 @@ namespace WebAPI.Controllers
             }
             return NoContent();
         }
-        [HttpDelete("{id}")]
+        //Delete:http://localhost:5000/api/Users/{id}
+        [HttpDelete("/api/User/{id}")]
         public async Task<ActionResult<Users>> DeletarUsuario(int id)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user == null) 
+            if (user is null) 
             { 
                 return NotFound();
             }

@@ -10,7 +10,7 @@ using WebAPI.Data;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(_Context))]
-    [Migration("20230417163002_InitialDB")]
+    [Migration("20230418184344_InitialDB")]
     partial class InitialDB
     {
         /// <inheritdoc />
@@ -29,7 +29,7 @@ namespace WebAPI.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -40,6 +40,9 @@ namespace WebAPI.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
